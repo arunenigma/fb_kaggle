@@ -3,6 +3,12 @@ import tables
 
 
 class ReadData(object):
+    def __init__(self):
+        self.ids = []
+        self.titles = []
+        self.bodies = []
+        self.tags = []
+
     def chunkAndDataStreamData(self, hd5_file, csv_file):
         id_chunks = []
         title_chunks = []
@@ -49,17 +55,17 @@ class ReadData(object):
         for group in hd5_file.walk_groups("/Id"):
             for array in hd5_file.list_nodes(group, classname='Array'):
                 if 'axis1' in str(array):
-                    print list(array)
+                    self.ids = list(array)
 
         for group in hd5_file.walk_groups("/Title"):
             for array in hd5_file.list_nodes(group, classname='VLArray'):
-                print list(array)[0]
+                self.titles = list(array)[0]
 
         for group in hd5_file.walk_groups("/Body"):
             for array in hd5_file.list_nodes(group, classname='VLArray'):
-                print list(array)[0]
+                self.bodies = list(array)[0]
 
         for group in hd5_file.walk_groups("/Tags"):
             for array in hd5_file.list_nodes(group, classname='VLArray'):
                 if 'block0' in str(array):
-                    print list(array)[0]
+                    self.tags = list(array)[0]
