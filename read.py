@@ -1,3 +1,9 @@
+__author__ = "Arunprasath Shankar"
+__copyright__ = "Copyright 2013, Arunprasath Shankar"
+__license__ = "GPL"
+__version__ = "1.0.1"
+__email__ = "axs918@case.edu"
+
 from pandas import *
 import tables
 
@@ -16,7 +22,7 @@ class ReadData(object):
         tags_chunks = []
 
         for i, chunk in enumerate(csv_file):
-            if not i > 100:
+            if not i > 1:
                 id_chunks.append(chunk['Id'])
                 title_chunks.append(chunk['Title'])
                 body_chunks.append(chunk['Body'])
