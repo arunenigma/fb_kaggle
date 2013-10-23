@@ -9,7 +9,7 @@ __email__ = "axs918@case.edu"
 
 # ques_analyzer.py generates input data for fuzzification
 
-from nltk import corpus as corpus, word_tokenize, pos_tag
+from nltk import corpus as corpus, pos_tag
 from nltk import bigrams, trigrams
 from string import maketrans
 from lxml import etree
@@ -150,6 +150,8 @@ class WordTagger(HelperFunctions):
         self.loc_sig_ol_unigrams = {}
         self.loc_sig_li_unigrams = {}
         self.loc_sig_a_unigrams = {}
+        self.loc_sig_tag_unigrams = {}
+        self.loc_sig_title_unigrams = {}
 
         self.ques_english_dict_match_count = 0
         self.number_match_count = 0
@@ -467,6 +469,12 @@ class WordTagger(HelperFunctions):
             if not self.ques_word_lower_case in (
                 corpus.stopwords.words('english')) and not self.idf == 1.0 and 'a' in self.potential_tags_found:
                 self.loc_sig_a_unigrams[self.ques_word] = self.tf_idf
+            if not self.ques_word_lower_case in (
+                corpus.stopwords.words('english')) and not self.idf == 1.0 and 'tag' in self.potential_tags_found:
+                self.loc_sig_tag_unigrams[self.ques_word] = self.tf_idf
+            if not self.ques_word_lower_case in (
+                corpus.stopwords.words('english')) and not self.idf == 1.0 and 'title' in self.potential_tags_found:
+                self.loc_sig_title_unigrams[self.ques_word] = self.tf_idf
 
     def firstLetterOfEveryWordCapitalized(self, string):
         cap_count = 0

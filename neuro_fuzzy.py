@@ -35,7 +35,7 @@ class NeuroFuzzySystem(object):
 
         self.mfs = []
 
-    def neuroFuzzyModelling(self, tf_idf_list, u1, u2, u13, u14,
+    def neuroFuzzyModelling(self, tf_idf_list, u1, u2, u3, u4, u5, u6, u13, u14,
                             tf_idf_bigram_list,
                             b1, b2, b3, b4, b5, tf_idf_trigram_list, t1, t2, t3, t4, t5, t6):
         """
@@ -43,22 +43,13 @@ class NeuroFuzzySystem(object):
         @param tf_idf_bigram_list:
         @param tf_idf_trigram_list:
         """
-
-        out = open('out.txt', 'w')
-        for item in u1:
-            out.write(str(item[0]) + " " + str(item[1]) + '\n')
-        out.close()
-
-        # dictionary of word bag names
-        bag_names = {'u1': 'common English word', 'u2': 'unigram noun', 'u3': 'unigram link tag',
-                     'u4': 'unigram heading H1 tag', 'u5': 'unigram heading H2 tag', 'u6': 'unigram heading H3 tag',
-                     'u7': 'unigram heading H4 tag', 'u8': 'unigram heading H5 tag', 'u9': 'unigram heading H6 tag',
-                     'u10': 'unigram LI Title tag', 'u11': 'unigram TD tag', 'u12': 'unigram TH tag',
-                     'u13': 'unigram all CAP', 'u14': 'unigram number', 'dd_o': 'object', 'dd_f': 'feature',
-                     'dd_a': 'attribute'}
-
         u1 = {item[0]: item[1:] for item in u1}  # word bag - common english words
         u2 = {item[0]: item[1:] for item in u2}
+        u3 = {item[0]: item[1:] for item in u3}
+        if not u4 is None:
+            u4 = {item[0]: item[1:] for item in u4}
+        u5 = {item[0]: item[1:] for item in u5}
+        u6 = {item[0]: item[1:] for item in u6}
         u13 = {item[0]: item[1:] for item in u13}
         u14 = {item[0]: item[1:] for item in u14}
 
@@ -78,28 +69,21 @@ class NeuroFuzzySystem(object):
         for info, word in tf_idf_list.iteritems():
 
             try:
-                activated_fuzzy_sets = []
                 u1_nrn_info = u1.get(word, 0)
-                if not u1_nrn_info == 0:
-                    activated_fuzzy_sets.append(bag_names.get('u1'))
                 u2_nrn_info = u2.get(word, 0)
-                if not u2_nrn_info == 0:
-                    activated_fuzzy_sets.append(bag_names.get('u2'))
+                u3_nrn_info = u3.get(word, 0)
+                if not u4 is None:
+                    u4_nrn_info = u4.get(word, 0)
+                u5_nrn_info = u5.get(word, 0)
+                u6_nrn_info = u6.get(word, 0)
                 u13_nrn_info = u13.get(word, 0)
-                if not u13_nrn_info == 0:
-                    activated_fuzzy_sets.append(bag_names.get('u13'))
                 u14_nrn_info = u14.get(word, 0)
-                if not u14_nrn_info == 0:
-                    activated_fuzzy_sets.append(bag_names.get('u14'))
 
             except KeyError:
                 continue
 
             self.mfs = []  # membership functions
             self.wts = []  # weights
-
-            #print word
-            #print activated_fuzzy_sets
 
             if not u1_nrn_info == 0:
                 u1_mf1 = u1_nrn_info[1] * u1_nrn_info[2] - 1
@@ -114,6 +98,35 @@ class NeuroFuzzySystem(object):
                 self.mfs.append([u2_mf1, u2_mf2])
                 self.wts.append(u2_nrn_info[2])
                 self.wts.append(u2_nrn_info[4])
+            
+            if not u3_nrn_info == 0:  # code
+                u3_mf1 = u3_nrn_info[1] * u3_nrn_info[2] + 2  # +3 --> bias
+                u3_mf2 = u3_nrn_info[3] * u3_nrn_info[4] + 2
+                self.mfs.append([u3_mf1, u3_mf2])
+                self.wts.append(u3_nrn_info[2])
+                self.wts.append(u3_nrn_info[4])
+
+            if not u4 is None:
+                if not u4_nrn_info == 0:
+                    u4_mf1 = u4_nrn_info[1] * u4_nrn_info[2] + 2  # +2 --> bias
+                    u4_mf2 = u4_nrn_info[3] * u4_nrn_info[4] + 2
+                    self.mfs.append([u4_mf1, u4_mf2])
+                    self.wts.append(u4_nrn_info[2])
+                    self.wts.append(u4_nrn_info[4])
+                
+            if not u5_nrn_info == 0:
+                u5_mf1 = u5_nrn_info[1] * u5_nrn_info[2] + 2  # +2 --> bias
+                u5_mf2 = u5_nrn_info[3] * u5_nrn_info[4] + 2
+                self.mfs.append([u5_mf1, u5_mf2])
+                self.wts.append(u5_nrn_info[2])
+                self.wts.append(u5_nrn_info[4])
+                
+            if not u6_nrn_info == 0:
+                u6_mf1 = u6_nrn_info[1] * u6_nrn_info[2] + 2  # +2 --> bias
+                u6_mf2 = u6_nrn_info[3] * u6_nrn_info[4] + 2
+                self.mfs.append([u6_mf1, u6_mf2])
+                self.wts.append(u6_nrn_info[2])
+                self.wts.append(u6_nrn_info[4])
 
             if not u13_nrn_info == 0:
                 u13_mf1 = u13_nrn_info[1] * u13_nrn_info[2] + 2
@@ -271,9 +284,11 @@ class NeuroFuzzySystem(object):
                 self.defuzzifyTrigrams(trigram, rule_inputs, weights, info)
 
     def defuzzifyUnigrams(self, word, rule_inputs, weights, info):
-        cog = rule_inputs / weights
+        if weights > 0:
+            cog = rule_inputs / weights
+            self.cog_list.append(cog)
         self.word_list.append(word)
-        self.cog_list.append(cog)
+
         self.word_info[info] = word
 
     def defuzzifyBigrams(self, bigram, rule_inputs, weights, info):
@@ -289,9 +304,10 @@ class NeuroFuzzySystem(object):
         self.trigram_info[info] = trigram
 
     def normCOGUnigrams(self):
+        """
         for k, v in self.word_info.iteritems():
             print k, v
-
+        """
         if not len(self.cog_list) < 1:
             self.max_cog = max(self.cog_list)
             self.cog_list = [cog / self.max_cog for cog in self.cog_list]
@@ -304,17 +320,13 @@ class NeuroFuzzySystem(object):
                 self.uni_gram_lv_list.append(item[1])  # item[1] --> PI score
                 for info, word in self.word_info.iteritems():
                     if item[0] == word:
-                        print info
-                        self.uni_gram_lv_list.append(info)
-                NeuroFuzzySystem.PI_bundle_unigrams[item[0]] = self.uni_gram_lv_list
+                        if 'tag' in info[-1]:
+                            self.uni_gram_lv_list.append('tag')
 
-        else:
-            print '*********** UNIGRAMS ***********'
-            print None
+                NeuroFuzzySystem.PI_bundle_unigrams[item[0]] = self.uni_gram_lv_list
 
     def normCOGBigrams(self):
         if not len(self.cog_list_bigrams) < 1:
-            print self.cog_list_bigrams
             max_cog = max(self.cog_list_bigrams)
             self.cog_list_bigrams = [cog / max_cog for cog in self.cog_list_bigrams]
             word_rank = dict(zip(self.bigram_list, self.cog_list_bigrams))
@@ -326,12 +338,9 @@ class NeuroFuzzySystem(object):
                 self.bi_gram_lv_list.append(item[1])
                 for info, bigram in self.bigram_info.iteritems():
                     if item[0] == bigram:
-                        print info
-                        self.bi_gram_lv_list.append(info)
+                        if 'tag' in info[-1]:
+                            self.bi_gram_lv_list.append('tag')
                 NeuroFuzzySystem.PI_bundle_bigrams[item[0]] = self.bi_gram_lv_list
-        else:
-            print '*********** BIGRAMS ***********'
-            print None
 
     def normCOGTrigrams(self):
         if not len(self.cog_list_trigrams) < 1:
@@ -346,9 +355,6 @@ class NeuroFuzzySystem(object):
                 self.tri_gram_lv_list.append(item[1])
                 for info, trigram in self.trigram_info.iteritems():
                     if item[0] == trigram:
-                        print info
-                        self.tri_gram_lv_list.append(info)
+                        if 'tag' in info[-1]:
+                            self.tri_gram_lv_list.append('tag')
                 NeuroFuzzySystem.PI_bundle_trigrams[item[0]] = self.tri_gram_lv_list
-        else:
-            print '*********** TRIGRAMS ***********'
-            print None
